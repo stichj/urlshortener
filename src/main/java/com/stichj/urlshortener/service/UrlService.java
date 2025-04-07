@@ -15,13 +15,13 @@ public class UrlService {
         this.urlRepository = urlRepository;
     }
 
-    public String shortenUrl(String originalUrl) {
+    public UrlMapping shortenUrl(String originalUrl) {
         String shortCode = generateShortCode();
         while (urlRepository.findByShortCode(shortCode).isPresent()) {
             shortCode = generateShortCode();
         }
         UrlMapping urlMapping = new UrlMapping();
-        urlMapping.setUrl(originalUrl);
+        urlMapping.setOriginalUrl(originalUrl);
         urlMapping.setShortCode(shortCode);
 
         urlRepository.save(urlMapping);
@@ -31,7 +31,7 @@ public class UrlService {
 
     public String getOriginalUrl(String shortCode) {
         return urlRepository.findByShortCode(shortCode)
-                .map(UrlMapping::getUrl)
+                .map(UrlMapping::getOriginalUrl)
                 .orElseThrow(() -> new UrlNotFoundException("Short code not found: " + shortCode));
     }
 

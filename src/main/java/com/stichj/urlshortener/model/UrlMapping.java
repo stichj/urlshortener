@@ -15,7 +15,7 @@ public class UrlMapping {
     private String shortCode;
 
     @Column(nullable = false)
-    private String url;
+    private String originalUrl;
 
     private LocalDateTime createdAt;
 
@@ -31,8 +31,8 @@ public class UrlMapping {
         this.shortCode = shortCode;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
@@ -47,8 +47,8 @@ public class UrlMapping {
         return shortCode;
     }
 
-    public String getUrl() {
-        return url;
+    public String getOriginalUrl() {
+        return originalUrl;
     }
 
     public LocalDateTime getCreatedAt() {
