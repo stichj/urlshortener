@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class URLMapping {
+public class UrlMapping {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class URLMapping {
 
     private LocalDateTime createdAt;
 
-    public URLMapping() {
+    public UrlMapping() {
         this.createdAt = LocalDateTime.now();
     }
 
