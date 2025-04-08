@@ -26,10 +26,7 @@ public class UrlService {
 
         urlRepository.save(urlMapping);
 
-        String finalShortCode = shortCode;
-        return urlRepository.findByShortCode(shortCode).orElseThrow(
-                () -> new UrlNotFoundException("Short code not found: " + finalShortCode)
-        );
+        return urlMapping;
 
     }
 
