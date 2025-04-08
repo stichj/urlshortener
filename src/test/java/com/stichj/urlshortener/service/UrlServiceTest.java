@@ -2,6 +2,7 @@ package com.stichj.urlshortener.service;
 
 import com.stichj.urlshortener.model.UrlMapping;
 import com.stichj.urlshortener.repository.UrlRepository;
+import com.stichj.urlshortener.util.exceptions.UrlNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -40,7 +41,39 @@ public class UrlServiceTest {
         assertEquals(originalUrl, savedMapping.getOriginalUrl());
         assertNotNull(savedMapping.getShortCode());
         assertEquals(result.getShortCode(), savedMapping.getShortCode());
-        assertFalse(result == null);
+        assertNotNull(result);
 
+    }
+
+    @Test
+    void getOriginalUrl_shouldReturnTheOriginalUrlFromAGivenShortCode() {
+        String url = "https://example.com";
+        String shortCode = "123abc";
+
+        UrlMapping urlMapping = new UrlMapping();
+        urlMapping.setOriginalUrl(url);
+        urlMapping.setId(1L);
+        urlMapping.setShortCode(shortCode);
+
+        when(urlRepository.findByShortCode(anyString())).thenReturn(Optional.of(urlMapping));
+
+        String originalUrl = urlService.getOriginalUrl(url);
+
+        assertEquals(url, originalUrl);
+
+    }
+
+    @Test
+    void getOriginalUrl_shouldThrowExceptionIfShortCodeNotFound() {
+        String falseShortCode = "notContained";
+
+        when(urlRepository.findByShortCode(falseShortCode)).thenReturn(Optional.empty());
+
+        UrlNotFoundException exception = assertThrows(
+                UrlNotFoundException.class,
+                () -> urlService.getOriginalUrl(falseShortCode)
+        );
+
+        assertEquals("Short code not found: notContained", exception.getMessage());
     }
 }
