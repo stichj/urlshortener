@@ -1,5 +1,6 @@
 package com.stichj.urlshortener.controller;
 
+import com.stichj.urlshortener.dto.UrlRequest;
 import com.stichj.urlshortener.model.UrlMapping;
 import com.stichj.urlshortener.service.UrlService;
 import com.stichj.urlshortener.util.exceptions.UrlNotFoundException;
@@ -17,7 +18,8 @@ public class UrlController {
     }
 
     @PostMapping("/shorten")
-    public ResponseEntity<UrlMapping> shortenUrl(@RequestBody String originalUrl) {
+    public ResponseEntity<UrlMapping> shortenUrl(@RequestBody UrlRequest urlRequest) {
+        String originalUrl = urlRequest.getOriginalUrl();
         UrlMapping mapping = urlService.shortenUrl(originalUrl);
 
         return new ResponseEntity<>(mapping, HttpStatus.CREATED);
