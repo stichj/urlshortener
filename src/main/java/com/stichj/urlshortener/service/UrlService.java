@@ -12,22 +12,35 @@ import java.util.Random;
 public class UrlService {
     UrlRepository urlRepository;
 
+    private static final String BASE62 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
     public UrlService(UrlRepository urlRepository) {
         this.urlRepository = urlRepository;
     }
 
     public UrlMapping shortenUrl(String originalUrl) {
-        String shortCode = generateShortCode();
-        while (urlRepository.findByShortCode(shortCode).isPresent()) {
-            shortCode = generateShortCode();
-        }
         UrlMapping urlMapping = new UrlMapping();
         urlMapping.setOriginalUrl(originalUrl);
-        urlMapping.setShortCode(shortCode);
 
-        urlRepository.save(urlMapping);
+        UrlMapping savedMapping = urlRepository.save(urlMapping);
 
-        return urlMapping;
+        String shortCode = generateBase62ShortCode(savedMapping.getId());
+
+        savedMapping.setShortCode(shortCode);
+
+        return savedMapping;
+
+    }
+
+    private String generateBase62ShortCode(Long id) {
+        StringBuilder builder = new StringBuilder();
+
+        while (id > 0) {
+            builder.append(BASE62.charAt((int) (id % 62)));
+            id /= 62;
+        }
+
+        return builder.reverse().toString();
 
     }
 
