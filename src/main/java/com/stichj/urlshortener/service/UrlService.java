@@ -3,6 +3,7 @@ package com.stichj.urlshortener.service;
 import com.stichj.urlshortener.model.UrlMapping;
 import com.stichj.urlshortener.repository.UrlRepository;
 import com.stichj.urlshortener.util.exceptions.UrlNotFoundException;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -30,6 +31,7 @@ public class UrlService {
 
     }
 
+    @Cacheable(value = "shortLinks", key = "#shortCode")
     public String getOriginalUrl(String shortCode) {
         return urlRepository.findByShortCode(shortCode)
                 .map(UrlMapping::getOriginalUrl)
