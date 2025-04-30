@@ -11,10 +11,10 @@ public class UrlMapping {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = true, unique = true)
+    @Column(name = "short_code", nullable = true, unique = true)
     private String shortCode;
 
-    @Column(nullable = false)
+    @Column(name = "original_url", nullable = false)
     private String originalUrl;
 
     private LocalDateTime createdAt;

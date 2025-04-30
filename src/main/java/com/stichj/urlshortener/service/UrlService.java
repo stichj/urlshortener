@@ -28,6 +28,8 @@ public class UrlService {
 
         savedMapping.setShortCode(shortCode);
 
+        urlRepository.save(savedMapping);
+
         return savedMapping;
 
     }
