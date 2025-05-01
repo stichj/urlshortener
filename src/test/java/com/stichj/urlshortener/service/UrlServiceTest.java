@@ -13,9 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UrlServiceTest {
@@ -29,15 +29,20 @@ public class UrlServiceTest {
     void shortenUrl_shouldGenerateShortCodeAndSaveMapping() {
         String originalUrl = "https://example.com";
 
-        when(urlRepository.findByShortCode(anyString())).thenReturn(Optional.empty());
+        when(urlRepository.save(any(UrlMapping.class))).thenAnswer(invocation -> {
+            UrlMapping mapping = invocation.getArgument(0);
+            mapping.setId(1L); // Simulate DB-generated ID
+            return mapping;
+        });
+
 
         ArgumentCaptor<UrlMapping> captor = ArgumentCaptor.forClass(UrlMapping.class);
 
         UrlMapping result = urlService.shortenUrl(originalUrl);
 
-        verify(urlRepository).save(captor.capture());
+        verify(urlRepository, times(2)).save(captor.capture());
 
-        UrlMapping savedMapping = captor.getValue();
+        UrlMapping savedMapping = captor.getAllValues().get(1);
         assertEquals(originalUrl, savedMapping.getOriginalUrl());
         assertNotNull(savedMapping.getShortCode());
         assertEquals(result.getShortCode(), savedMapping.getShortCode());
